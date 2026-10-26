@@ -8,6 +8,7 @@ export const maxDuration = 60;
 
 /** Что НЕ кладём в архив — именно из-за этого обычная выгрузка весит сотни мегабайт. */
 const SKIP_DIRS = new Set([
+  "data", // встроенная база PGlite — это не исходники
   "node_modules",
   ".next",
   ".git",

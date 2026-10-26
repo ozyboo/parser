@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       <guid isPermaLink="false">${escapeXml(`${post.sourceId}:${post.externalId}`)}</guid>
       <pubDate>${date}</pubDate>
       <source>${escapeXml(post.sourceTitle)}</source>
-      <description><![CDATA[${post.html || post.text}]]></description>
+      <description><![CDATA[${(post.html || post.text).replaceAll("]]>", "]]&gt;")}]]></description>
     </item>`;
     })
     .join("\n");

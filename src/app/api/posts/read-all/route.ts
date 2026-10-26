@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { posts } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
 
 /** Отметить всё (или посты одного источника) прочитанным. */
 export async function POST(request: Request) {
+  await ensureSchema();
   const { searchParams } = new URL(request.url);
   const rawId = searchParams.get("sourceId");
 

@@ -7,6 +7,20 @@ export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
   if (process.env.NEXT_PHASE === "phase-production-build") return;
 
+  // Таблицы создаём сразу при старте сервера (в обоих режимах базы),
+  // чтобы первый же запрос не упирался в «relation does not exist».
+  try {
+    const { ensureSchema, dbKind } = await import("@/db");
+    await ensureSchema();
+    console.log(
+      dbKind === "postgres"
+        ? "[db] внешний PostgreSQL (DATABASE_URL), схема готова"
+        : "[db] встроенный PostgreSQL (PGlite, ./data/pg), схема готова",
+    );
+  } catch (error) {
+    console.error("[db] не удалось подготовить схему:", error);
+  }
+
   const minutes = Number(process.env.AUTO_PARSE_MINUTES ?? "15");
   if (!Number.isFinite(minutes) || minutes <= 0) return;
 

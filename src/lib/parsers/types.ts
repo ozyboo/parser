@@ -38,10 +38,20 @@ export async function fetchText(url: string, timeoutMs = 20_000): Promise<string
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      throw new Error(`HTTP ${response.status} ${response.statusText} — ${url}`);
     }
 
     return await response.text();
+  } catch (error) {
+    // Голый «fetch failed» никому ничего не говорит — достаём причину.
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(`Таймаут ${timeoutMs / 1000}с при загрузке ${url}`);
+    }
+    if (error instanceof Error && error.message.startsWith("HTTP ")) throw error;
+    const cause = (error as { cause?: unknown })?.cause;
+    const detail =
+      cause instanceof Error ? cause.message : error instanceof Error ? error.message : String(error);
+    throw new Error(`Не удалось загрузить ${url}: ${detail}`);
   } finally {
     clearTimeout(timer);
   }

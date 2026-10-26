@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { posts } from "@/db/schema";
 import { toPostDTO } from "@/lib/dto";
 import { listPosts } from "@/lib/queries";
@@ -38,6 +38,7 @@ export async function GET(request: Request) {
 
 /** Очистка хранилища: всё или по конкретному источнику. */
 export async function DELETE(request: Request) {
+  await ensureSchema();
   const { searchParams } = new URL(request.url);
   const rawId = searchParams.get("sourceId");
 
