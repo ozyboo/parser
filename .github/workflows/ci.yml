@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      # DATABASE_URL не задаём: сборка и запуск обязаны работать
+      # на встроенной базе (PGlite) — это и проверяем.
+      - run: npm run build
+      - name: Smoke test (встроенная база, демо-лента)
+        run: |
+          AUTO_PARSE_MINUTES=0 npm run start &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:3000/api/health && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:3000/api/health | grep -q '"ok":true'
+          curl -sf -X POST http://127.0.0.1:3000/api/sources \
+            -H 'content-type: application/json' \
+            -d '{"url":"http://127.0.0.1:3000/demo-feed.xml","kind":"rss"}'
+          curl -sf 'http://127.0.0.1:3000/api/posts?limit=5' | grep -q 'демо-пост' || curl -sf 'http://127.0.0.1:3000/api/posts?limit=5'
+          curl -sf 'http://127.0.0.1:3000/api/posts?limit=5' | grep -q '"total":3'

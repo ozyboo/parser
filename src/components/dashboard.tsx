@@ -337,6 +337,15 @@ export function Dashboard({ initialSources, initialPosts, initialTotal, initialS
             </form>
 
             <div className="mt-3 flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                disabled={adding}
+                onClick={() => void addSource(`${window.location.origin}/demo-feed.xml`, "rss")}
+                className="rounded-full border border-emerald-700/60 px-2.5 py-1 text-[11px] text-emerald-300 transition hover:border-emerald-400 disabled:opacity-40"
+                title="Локальная тестовая лента из public/demo-feed.xml — интернет не нужен"
+              >
+                + Демо-лента (без интернета)
+              </button>
               {SUGGESTIONS.map((item) => (
                 <button
                   key={item.value}

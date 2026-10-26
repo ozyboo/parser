@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, gt, gte, ilike, or, sql, type SQL } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { posts, sources, type Post, type Source } from "@/db/schema";
 
 export type PostFilters = {
@@ -49,6 +49,7 @@ function buildWhere(filters: PostFilters): SQL | undefined {
 }
 
 export async function listPosts(filters: PostFilters): Promise<{ items: Post[]; total: number }> {
+  await ensureSchema();
   const limit = Math.min(Math.max(filters.limit ?? 50, 1), 200);
   const offset = Math.max(filters.offset ?? 0, 0);
   const where = buildWhere(filters);
@@ -71,6 +72,7 @@ export async function listPosts(filters: PostFilters): Promise<{ items: Post[]; 
 }
 
 export async function listSources(): Promise<SourceWithStats[]> {
+  await ensureSchema();
   const rows = await db
     .select({
       source: sources,
@@ -85,6 +87,7 @@ export async function listSources(): Promise<SourceWithStats[]> {
 }
 
 export async function getStats() {
+  await ensureSchema();
   const [row] = await db
     .select({
       total: sql<number>`cast(count(*) as int)`,

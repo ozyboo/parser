@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { posts } from "@/db/schema";
 import { toPostDTO } from "@/lib/dto";
 
@@ -10,6 +10,7 @@ type Context = { params: Promise<{ id: string }> };
 
 /** Отметки «прочитано» / «в избранном» для конкретного поста. */
 export async function PATCH(request: Request, context: Context) {
+  await ensureSchema();
   const { id } = await context.params;
   const postId = Number(id);
   if (!Number.isFinite(postId)) {
@@ -38,6 +39,7 @@ export async function PATCH(request: Request, context: Context) {
 }
 
 export async function DELETE(_request: Request, context: Context) {
+  await ensureSchema();
   const { id } = await context.params;
   const postId = Number(id);
   if (!Number.isFinite(postId)) {

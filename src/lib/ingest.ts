@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { posts, sources, type NewPost, type Source } from "@/db/schema";
 import { parseRssSource } from "@/lib/parsers/rss";
 import { normalizeTelegramHandle, parseTelegramSource } from "@/lib/parsers/telegram";
@@ -117,6 +117,7 @@ export async function ingestSource(source: Source): Promise<IngestReport> {
 
 /** Обновляет все активные источники (или один конкретный). */
 export async function ingestAll(sourceId?: number): Promise<IngestReport[]> {
+  await ensureSchema();
   const list = sourceId
     ? await db.select().from(sources).where(eq(sources.id, sourceId))
     : await db.select().from(sources).where(eq(sources.enabled, true));
@@ -137,6 +138,7 @@ export async function ingestAll(sourceId?: number): Promise<IngestReport[]> {
 
 /** Добавляет источник (или возвращает существующий) и сразу тянет посты. */
 export async function addSource(input: string, kindInput?: SourceKind) {
+  await ensureSchema();
   const trimmed = input.trim();
   if (!trimmed) throw new Error("Пустая ссылка");
 

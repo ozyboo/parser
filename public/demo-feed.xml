@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Демо-лента парсера</title>
+    <link>https://example.com/</link>
+    <description>Локальная тестовая лента: позволяет проверить парсер без интернета</description>
+    <language>ru</language>
+    <item>
+      <title>Первый демо-пост: парсер работает</title>
+      <link>https://example.com/posts/1</link>
+      <guid isPermaLink="false">demo-1</guid>
+      <pubDate>Mon, 26 Oct 2026 09:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Если ты видишь этот пост в ленте — цепочка «RSS → парсер → база → API → интерфейс» жива.</p><p>Дальше добавляй настоящие источники: RSS-ссылки и публичные Telegram-каналы.</p>]]></description>
+    </item>
+    <item>
+      <title>Второй демо-пост: дедупликация</title>
+      <link>https://example.com/posts/2</link>
+      <guid isPermaLink="false">demo-2</guid>
+      <pubDate>Mon, 26 Oct 2026 10:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Нажми «Обновить» у источника ещё раз — новых постов будет 0. Уникальный индекс (source_id, external_id) не пропускает дубли.</p>]]></description>
+    </item>
+    <item>
+      <title>Третий демо-пост: поиск и избранное</title>
+      <link>https://example.com/posts/3</link>
+      <guid isPermaLink="false">demo-3</guid>
+      <pubDate>Mon, 26 Oct 2026 11:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Попробуй поиск по слову «дедупликация», звёздочку «в избранное» и отметку «прочитано» — всё это живёт в той же таблице posts.</p>]]></description>
+    </item>
+  </channel>
+</rss>

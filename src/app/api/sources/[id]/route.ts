@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { db, ensureSchema } from "@/db";
 import { sources } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, context: Context) {
+  await ensureSchema();
   const { id } = await context.params;
   const sourceId = Number(id);
   if (!Number.isFinite(sourceId)) {
@@ -32,6 +33,7 @@ export async function PATCH(request: Request, context: Context) {
 }
 
 export async function DELETE(_request: Request, context: Context) {
+  await ensureSchema();
   const { id } = await context.params;
   const sourceId = Number(id);
   if (!Number.isFinite(sourceId)) {
